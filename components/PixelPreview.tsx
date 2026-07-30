@@ -6,7 +6,7 @@ export default function PixelPreview({
   image,
 }: PixelPreviewProps) {
   return (
-    <div className="mt-8">
+    <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       <h2 className="mb-3 text-2xl font-bold text-gray-900">
         🧩 像素化预览
       </h2>

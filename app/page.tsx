@@ -7,13 +7,16 @@ import UploadArea from "../components/UploadArea";
 import SizeSelector from "../components/SizeSelector";
 import PixelPreview from "../components/PixelPreview";
 
+
 import { resizeImage } from "../lib/imageResize";
 import { getPixels } from "../lib/getPixels";
 import { loadPalette } from "../lib/loadPalette";
 import { generatePattern } from "../lib/patternGenerator";
+import { exportPatternAsPNG } from "../lib/exportPNG";
 
 import type { BeadColor } from "../types/beadColor";
 import PixelGrid from "../components/PixelGrid";
+import ColorStatistics from "../components/ColorStatistics";
 
 
 export default function Home() {
@@ -29,28 +32,28 @@ export default function Home() {
 
   const [pattern, setPattern] = useState<BeadColor[][]>([]);
 
-  async function handleFile(file: File) {
-    // 原图预览
-    const original = URL.createObjectURL(file);
-    setOriginalImage(original);
+async function handleFile(file: File) {
+  // 原圖預覽
+  const original = URL.createObjectURL(file);
+  setOriginalImage(original);
 
-    // 缩放图片
-    const resized = await resizeImage(file, size, size);
-    setPixelImage(resized);
+  // 縮放圖片
+  const resized = await resizeImage(file, size, size);
+  setPixelImage(resized);
 
-    // 取得像素
-    const pixels = await getPixels(file, size, size);
+  // 取得像素
+  const pixels = await getPixels(file, size, size);
 
-    // 读取调色盘
-    const palette = await loadPalette();
+  // 讀取調色盤
+  const palette = await loadPalette();
 
-    // 产生拼豆图
-    const result = generatePattern(pixels, palette);
+  // 產生拼豆圖
+  const result = generatePattern(pixels, palette);
 
-    setPattern(result);
+  setPattern(result);
 
-    console.log("拼豆图：", result);
-  }
+  console.log("拼豆圖：", result);
+}
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-green-100 p-8">
@@ -68,9 +71,6 @@ export default function Home() {
 
             if (file) {
               setSelectedFile(file);
-
-            const original = URL.createObjectURL(file);
-            setOriginalImage(original);
 
             }
           }}
@@ -96,8 +96,14 @@ export default function Home() {
           </p>
         </div>
 
-        <PixelPreview image={pixelImage} />
-        <PixelGrid pattern={pattern} />
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+          <PixelPreview image={pixelImage} />
+
+          <PixelGrid pattern={pattern} />
+        </div>
+
+
+        <ColorStatistics pattern={pattern} />
 
         <button
           onClick={async () => {
@@ -107,8 +113,18 @@ export default function Home() {
          }}
          className="mt-8 w-full rounded-2xl bg-green-600 py-4 text-xl font-bold text-white transition hover:bg-green-700"
 >
+  
   开始生成拼豆图
 </button>
+
+{pattern.length > 0 && (
+  <button
+    onClick={() => exportPatternAsPNG(pattern)}
+    className="mt-4 w-full rounded-2xl bg-blue-600 py-4 text-xl font-bold text-white transition hover:bg-blue-700"
+  >
+    🖼️ 下載 PNG
+  </button>
+)}
 
       </div>
     </main>
