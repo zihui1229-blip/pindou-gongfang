@@ -31,6 +31,7 @@ export default function Home() {
   const [size, setSize] = useState(29);
 
   const [pattern, setPattern] = useState<BeadColor[][]>([]);
+  const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
 
 async function handleFile(file: File) {
   // 原圖預覽
@@ -99,11 +100,18 @@ async function handleFile(file: File) {
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <PixelPreview image={pixelImage} />
 
-          <PixelGrid pattern={pattern} />
+          <PixelGrid 
+          pattern={pattern}
+          selectedColorId={selectedColorId}
+          onSelectColor={setSelectedColorId}
+           />
         </div>
 
 
-        <ColorStatistics pattern={pattern} />
+        <ColorStatistics 
+          pattern={pattern}
+          selectedColorId={selectedColorId}
+         />
 
         <button
           onClick={async () => {

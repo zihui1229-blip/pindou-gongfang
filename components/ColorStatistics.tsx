@@ -2,9 +2,13 @@ import type { BeadColor } from "../types/beadColor";
 
 type Props = {
   pattern: BeadColor[][];
+  selectedColorId: number | null;
 };
 
-export default function ColorStatistics({ pattern }: Props) {
+export default function ColorStatistics({
+  pattern,
+  selectedColorId,
+}: Props) {
   if (pattern.length === 0) {
     return null;
   }
@@ -33,21 +37,20 @@ export default function ColorStatistics({ pattern }: Props) {
 
   return (
     <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm text-black">
-     <h2 className="mb-4 text-2xl font-bold text-black">        
-       🎨 顏色統計
+      <h2 className="mb-4 text-2xl font-bold">
+        🎨 顏色統計
       </h2>
 
-      <p className="mb-4 font-semibold text-black">
+      <p className="mb-4 font-semibold">
         總拼豆數：{total} 顆
       </p>
 
-      <p className="mb-6 font-semibold text-black">
-      使用顏色：{colorCount} 種
+      <p className="mb-6 font-semibold">
+        使用顏色：{colorCount} 種
       </p>
 
-
       <table className="w-full border-collapse">
-        <thead className="text-black">
+        <thead>
           <tr className="border-b">
             <th className="py-2 text-left">顏色</th>
             <th className="py-2 text-left">名稱</th>
@@ -57,26 +60,39 @@ export default function ColorStatistics({ pattern }: Props) {
         </thead>
 
         <tbody>
-          {statistics.map(({ color, count }) => (
-            <tr key={color.id} className="border-b text-black">
-              <td className="py-2">
-                <div
-                  className="h-6 w-6 rounded-full border border-gray-300"
-                  style={{
-                    backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})`,
-                  }}
-                />
-              </td>
+          {statistics.map(({ color, count }) => {
+            const selected = selectedColorId === color.id;
 
-              <td className="py-2">
-                {color.id} - {color.name}
-              </td>
+            return (
+              <tr
+                key={color.id}
+                className={`border-b transition ${
+                  selected ? "bg-blue-100" : ""
+                }`}
+              >
+                <td className="py-2">
+                  <div
+                    className="h-6 w-6 rounded-full border border-gray-300"
+                    style={{
+                      backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})`,
+                    }}
+                  />
+                </td>
 
-              <td className="py-2 text-right">
-                {count}
-              </td>
-            </tr>
-          ))}
+                <td className="py-2 font-medium">
+                  {color.id} - {color.name}
+                </td>
+
+                <td className="py-2 text-right">
+                  {count}
+                </td>
+
+                <td className="py-2 text-right">
+                  {((count / total) * 100).toFixed(1)}%
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

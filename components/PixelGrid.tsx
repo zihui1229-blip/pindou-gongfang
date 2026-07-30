@@ -3,6 +3,8 @@ import Bead from "./Bead";
 
 type PixelGridProps = {
   pattern: BeadColor[][];
+  selectedColorId: number | null;
+  onSelectColor: (colorId: number | null) => void;
 };
 
 function columnLabel(index: number): string {
@@ -17,12 +19,15 @@ function columnLabel(index: number): string {
   return result;
 }
 
-export default function PixelGrid({ pattern }: PixelGridProps) {
+export default function PixelGrid({
+  pattern,
+  selectedColorId,
+  onSelectColor,
+}: PixelGridProps) {
   if (pattern.length === 0) {
     return null;
   }
 
-  const rows = pattern.length;
   const cols = pattern[0].length;
 
   return (
@@ -42,7 +47,7 @@ export default function PixelGrid({ pattern }: PixelGridProps) {
           {/* 左上角 */}
           <div />
 
-          {/* 上方 A、B、C... */}
+          {/* 欄標 A、B、C... */}
           {Array.from({ length: cols }).map((_, col) => (
             <div
               key={col}
@@ -54,12 +59,14 @@ export default function PixelGrid({ pattern }: PixelGridProps) {
 
           {/* 每一列 */}
           {pattern.map((row, rowIndex) => (
-            <>
-              {/* 左側行號 */}
-              <div
-                key={`row-${rowIndex}`}
-                className="flex items-center justify-center text-xs font-bold text-gray-600"
-              >
+            <div
+              key={rowIndex}
+              style={{
+                display: "contents",
+              }}
+            >
+              {/* 行號 */}
+              <div className="flex items-center justify-center text-xs font-bold text-gray-600">
                 {rowIndex + 1}
               </div>
 
@@ -67,9 +74,15 @@ export default function PixelGrid({ pattern }: PixelGridProps) {
                 <Bead
                   key={`${rowIndex}-${colIndex}`}
                   color={color}
+                  selected={selectedColorId === color.id}
+                  onClick={() =>
+                    onSelectColor(
+                      selectedColorId === color.id ? null : color.id
+                    )
+                  }
                 />
               ))}
-            </>
+            </div>
           ))}
         </div>
       </div>
