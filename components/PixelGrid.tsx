@@ -5,6 +5,7 @@ type PixelGridProps = {
   pattern: BeadColor[][];
   selectedColorId: number | null;
   onSelectColor: (colorId: number | null) => void;
+    displayMode: "normal" | "number";
 };
 
 function columnLabel(index: number): string {
@@ -23,6 +24,7 @@ export default function PixelGrid({
   pattern,
   selectedColorId,
   onSelectColor,
+  displayMode,
 }: PixelGridProps) {
   if (pattern.length === 0) {
     return null;
@@ -74,6 +76,7 @@ export default function PixelGrid({
                 <Bead
                   key={`${rowIndex}-${colIndex}`}
                   color={color}
+                   mode={displayMode}
                   selected={selectedColorId === color.id}
                   onClick={() =>
                     onSelectColor(
